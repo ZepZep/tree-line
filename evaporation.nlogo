@@ -6,13 +6,16 @@ globals [
   ;forest-evap-mul      ;; ui effect of full tree neighbourhood on evaporation (e.g. 0.5)
   ;forest-capacity-mul  ;; ui effect of full tree neighbourhood on patch capacity (e.g. 2)
 
-  ;mean-rain-start-time ;; ui mean time between rain starts
-  ;mean-rain-duration   ;; ui mean duration of rain
-  ;rain-intensity       ;; ui rain intensity
+  ;mean-time-between-rain ;; ui mean time between rain starts
+  ;mean-rain-duration     ;; ui mean duration of rain
+  ;rain-intensity         ;; ui rain intensity
 
   mean-rainfall         ;;
+  current-rain-intensity
   mean-evaporation      ;;
   num-trees             ;;
+
+
 ]
 
 breed [trees tree]
@@ -46,33 +49,92 @@ to setup
 
   seed-trees
 
-  ask trees [set age random max-age]
+  ask trees [
+    set age random max-age
+    set color green - 2
+  ]
+
+  ask patches [ set water 0 ]
+
+  calculate-patch-values
+
   update-display
   reset-ticks
 end
 
 to update-display
   set mean-evaporation (mean [evap-rate] of patches)
-  ask patches [ set pcolor gray ]
+
+  (ifelse
+    show-what = "water amount" [
+      ask patches [
+        set pcolor 89.9 - (water / capacity) * 4.8
+      ]
+    ]
+    show-what = "evaporation rate" [
+      let max-evaporation (max [evap-rate] of patches)
+      let min-evaporation (min [evap-rate] of patches)
+      ask patches [
+        let scaled  scale-color 5 evap-rate max-evaporation min-evaporation
+        set pcolor 17 + scaled / 5
+      ]
+    ]
+  )
+
+
 end
 
 to seed-trees
-
+  ask n-of start-tree-count patches with [not any? trees-here]
+      [ sprout-trees 1 ]
 end
 
 
 to go
-  ;; neighbours
-  ;; capacity
-  ;; evap rate
-  ;; rain
+  calculate-patch-values
+    ;; neighbours
+    ;; patch capacity
+    ;; patch evap rate
+  rain
   ;; difuse water?
-  ;; cut water
+  cut-water
   ;; update trees health
-  ;; evaporate
+  evaporate
   ;; breed trees
   update-display
   tick
+end
+
+to calculate-patch-values
+  ask patches [
+    set neighbours sum [count trees-here] of neighbors
+    set neighbours neighbours + count trees-here
+
+    let capacity-mul 1 + (forest-capacity-mul - 1) * (neighbours / 9)
+    set capacity base-capacity * capacity-mul
+
+    let evap-mul 1 + (forest-evap-mul - 1) * (neighbours / 9)
+    set evap-rate global-temperature * evap-mul
+  ]
+end
+
+to rain
+  set mean-rainfall mean-rain-duration * rain-intensity / mean-time-between-rain
+  let rain-prog ticks mod mean-time-between-rain
+  ifelse (rain-prog < mean-rain-duration) [
+    set current-rain-intensity rain-intensity
+    ask patches [set water water + rain-intensity]
+  ] [
+    set current-rain-intensity 0
+  ]
+end
+
+to evaporate
+  ask patches [set water max list 0 (water - evap-rate)]
+end
+
+to cut-water
+  ask patches [set water min list water capacity]
 end
 
 ;to setup-old
@@ -243,10 +305,10 @@ end
 ; See Info tab for full copyright and license.
 @#$#@#$#@
 GRAPHICS-WINDOW
-462
-67
-905
-511
+420
+10
+863
+454
 -1
 -1
 15.0
@@ -385,10 +447,10 @@ NIL
 1
 
 SWITCH
-474
-580
-624
-613
+422
+535
+572
+568
 show-trees?
 show-trees?
 0
@@ -396,29 +458,30 @@ show-trees?
 -1000
 
 PLOT
-11
-428
-211
-578
+15
+319
+361
+469
 Rainfall
 NIL
 NIL
 0.0
 100.0
-0.5
-1.5
+0.0
+20.0
 true
-false
+true
 "" ""
 PENS
 "mean" 1.0 0 -16777216 true "" "plot mean-rainfall"
-"current" 1.0 0 -13791810 true "" ""
+"current" 1.0 0 -13791810 true "" "plot current-rain-intensity"
+"evaporation" 1.0 0 -2674135 true "" "plot mean-evaporation"
 
 PLOT
-222
-428
-422
-578
+1327
+40
+1527
+190
 Mean Evaporation rate
 NIL
 NIL
@@ -433,10 +496,10 @@ PENS
 "default" 1.0 0 -16777216 true "" "plot mean-evaporation"
 
 PLOT
-224
-584
-424
-734
+18
+643
+264
+793
 Population
 NIL
 NIL
@@ -525,14 +588,14 @@ paint-daisies-as
 2
 
 CHOOSER
-473
+421
+481
+591
 526
-643
-571
 show-what
 show-what
-"evaporation rate" "water amount"
-1
+"water amount" "evaporation rate"
+0
 
 CHOOSER
 6
@@ -545,137 +608,147 @@ temp-scenario
 0
 
 CHOOSER
-8
-216
-146
-261
+5
+186
+143
+231
 rain-scenario
 rain-scenario
 "maintain"
 0
 
 SLIDER
-13
-168
-209
-201
+158
+115
+359
+148
 global-temperature
 global-temperature
 0
-100
-10.0
-1
+20
+4.0
+0.1
 1
 NIL
 HORIZONTAL
 
 SLIDER
-83
+235
 10
-255
+407
 43
 forest-evap-mul
 forest-evap-mul
 0
-100
+2
 0.5
-1
+0.1
 1
 NIL
 HORIZONTAL
 
 SLIDER
-83
+235
 47
-277
+410
 80
 forest-capacity-mul
 forest-capacity-mul
 0
-100
+4
 2.0
-1
-1
-NIL
-HORIZONTAL
-
-SLIDER
-6
-271
-201
-304
-mean-rain-start-time
-mean-rain-start-time
-0
-100
-0.0
-1
+0.1
 1
 NIL
 HORIZONTAL
 
 SLIDER
-6
-315
-201
-348
-mean-rain-duration
-mean-rain-duration
+155
+189
+377
+222
+mean-time-between-rain
+mean-time-between-rain
 0
-100
-0.0
-1
-1
-NIL
-HORIZONTAL
-
-SLIDER
-6
-357
-201
-390
-rain-intensity
-rain-intensity
-0
-100
-0.0
-1
-1
-NIL
-HORIZONTAL
-
-SLIDER
-268
-10
-412
-43
-start-tree-count
-start-tree-count
-0
-100
+200
 50.0
 1
 1
 NIL
 HORIZONTAL
 
+SLIDER
+155
+233
+377
+266
+mean-rain-duration
+mean-rain-duration
+0
+200
+20.0
+1
+1
+NIL
+HORIZONTAL
+
+SLIDER
+156
+274
+351
+307
+rain-intensity
+rain-intensity
+0
+100
+10.0
+1
+1
+NIL
+HORIZONTAL
+
+SLIDER
+75
+10
+231
+43
+start-tree-count
+start-tree-count
+0
+500
+100.0
+1
+1
+NIL
+HORIZONTAL
+
 PLOT
-12
-585
-212
-735
-Water amount
+16
+476
+264
+626
+Ground Water
 NIL
 NIL
 0.0
-10.0
+100.0
 0.0
-10.0
+100.0
 true
 false
 "" ""
 PENS
-"default" 1.0 0 -16777216 true "" "plot count turtles"
+"default" 1.0 0 -13791810 true "" "plot (mean [water] of patches)"
+
+CHOOSER
+6
+232
+141
+277
+rain-type
+rain-type
+"deterministic" "stochastic"
+0
 
 @#$#@#$#@
 ## WHAT IS IT?
