@@ -2,6 +2,9 @@ globals [
   max-age               ;; maximum age that all trees live to
   base-capacity         ;; base capacity of patches
 
+  max-seed-chance       ;; probability of seeding a new tree
+  max-health            ;; max healthpoints tree can have
+
   ;global-temperature   ;; ui determines base evaporation rate
   ;forest-evap-mul      ;; ui effect of full tree neighbourhood on evaporation (e.g. 0.5)
   ;forest-capacity-mul  ;; ui effect of full tree neighbourhood on patch capacity (e.g. 2)
@@ -43,6 +46,9 @@ to setup
 
   set max-age 25
   set base-capacity 100
+
+  set max-health 100
+  set max-seed-chance 0.8
 ;  set global-temperature 10
 ;  set forest-evap-mul 0.5
 ;  set forest-capacity-mul 2
@@ -52,6 +58,7 @@ to setup
   ask trees [
     set age random max-age
     set color green - 2
+    set health (50 + (random 50))
   ]
 
   ask patches [ set water 0 ]
@@ -98,9 +105,10 @@ to go
   rain
   ;; difuse water?
   cut-water
-  ;; update trees health
+  update-trees-health
   evaporate
-  ;; breed trees
+  age-trees
+  breed-trees
   update-display
   tick
 end
@@ -135,6 +143,42 @@ end
 
 to cut-water
   ask patches [set water min list water capacity]
+end
+
+to update-trees-health
+  ask trees [
+    if (water = 0) [
+      set health (health - random 5)
+    ]
+    if (water >= 50) [
+      set health (health + (10 + random 5))
+    ]
+    if (health = 0) [die]
+  ]
+end
+
+to age-trees
+  ask trees [
+    set age (age + 1)
+    if (age > max-age) [
+      set health min list health (max-health - ( (max-age - age) * 5))
+    ]
+  ]
+end
+
+to breed-trees
+  ask trees [
+    let prob 0
+    let seeding-place nobody
+    set prob (max-seed-chance * (health / max-health))
+    set prob (prob * prob)
+    if (random-float 1.0 < prob) [
+      set seeding-place one-of neighbors with [not any? trees-here]
+      if (seeding-place != nobody) [
+        ask seeding-place [sprout-trees 1 [set color green - 2] ]
+      ]
+    ]
+  ]
 end
 
 ;to setup-old
@@ -626,7 +670,7 @@ global-temperature
 global-temperature
 0
 20
-4.0
+9.2
 0.1
 1
 NIL
@@ -716,7 +760,7 @@ start-tree-count
 start-tree-count
 0
 500
-100.0
+106.0
 1
 1
 NIL
