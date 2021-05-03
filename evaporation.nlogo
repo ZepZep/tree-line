@@ -48,7 +48,7 @@ to setup
   set base-capacity 100
 
   set max-health 100
-  set max-seed-chance 0.8
+  set max-seed-chance 0.3
 ;  set global-temperature 10
 ;  set forest-evap-mul 0.5
 ;  set forest-capacity-mul 2
@@ -147,13 +147,13 @@ end
 
 to update-trees-health
   ask trees [
-    if (water = 0) [
+    if (water <= 0) [
       set health (health - random 5)
     ]
     if (water >= 50) [
-      set health (health + (10 + random 5))
+      set health min list max-health (health + (10 + random 5))
     ]
-    if (health = 0) [die]
+    if (health <= 0) [die]
   ]
 end
 
@@ -169,13 +169,20 @@ end
 to breed-trees
   ask trees [
     let prob 0
-    let seeding-place nobody
-    set prob (max-seed-chance * (health / max-health))
-    set prob (prob * prob)
-    if (random-float 1.0 < prob) [
-      set seeding-place one-of neighbors with [not any? trees-here]
-      if (seeding-place != nobody) [
-        ask seeding-place [sprout-trees 1 [set color green - 2] ]
+    let seeding-places nobody
+    if age >= 3 [
+      set prob (health / max-health)
+      set prob (prob * prob * prob)
+      set prob (prob * max-seed-chance)
+      if (random-float 1.0 < prob) [
+        set seeding-places up-to-n-of (1 + random 2) patches in-radius 4 with [not any? trees-here]
+        if (seeding-places != nobody) [
+          ask seeding-places [sprout-trees 1 [
+            set color green - 2
+            set health 30
+            ]
+          ]
+        ]
       ]
     ]
   ]
@@ -670,7 +677,7 @@ global-temperature
 global-temperature
 0
 20
-9.2
+6.2
 0.1
 1
 NIL
@@ -715,7 +722,7 @@ mean-time-between-rain
 mean-time-between-rain
 0
 200
-50.0
+108.0
 1
 1
 NIL
@@ -760,7 +767,7 @@ start-tree-count
 start-tree-count
 0
 500
-106.0
+100.0
 1
 1
 NIL
