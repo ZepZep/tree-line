@@ -27,6 +27,7 @@ patches-own [
   water
   neighbours
   capacity
+  evap-pos-mul
   evap-rate
 ]
 
@@ -48,7 +49,7 @@ to setup
   set base-capacity 100
 
   set max-health 100
-  set max-seed-chance 0.3
+  set max-seed-chance 0.05
 ;  set global-temperature 10
 ;  set forest-evap-mul 0.5
 ;  set forest-capacity-mul 2
@@ -62,6 +63,14 @@ to setup
   ]
 
   ask patches [ set water 0 ]
+
+  ifelse do-evap-pos-mul
+  [ask patches [
+    set evap-pos-mul (distancexy 0 0) / 8
+    set evap-pos-mul max list 1 evap-pos-mul
+    ]
+  ]
+  [ask patches [ set evap-pos-mul 1 ]]
 
   calculate-patch-values
 
@@ -92,7 +101,7 @@ to update-display
 end
 
 to seed-trees
-  ask n-of start-tree-count patches with [not any? trees-here]
+  ask n-of start-tree-count patches with [not any? trees-here and distancexy 0 0 <= 10]
       [ sprout-trees 1 ]
 end
 
@@ -121,8 +130,10 @@ to calculate-patch-values
     let capacity-mul 1 + (forest-capacity-mul - 1) * (neighbours / 9)
     set capacity base-capacity * capacity-mul
 
-    let evap-mul 1 + (forest-evap-mul - 1) * (neighbours / 9)
-    set evap-rate global-temperature * evap-mul
+    let evap-mul 1
+    if (any? trees-here)
+    [ set evap-mul 1 + (forest-evap-mul - 1) * (neighbours / 9)]
+    set evap-rate global-temperature * evap-mul * evap-pos-mul
   ]
 end
 
@@ -148,7 +159,7 @@ end
 to update-trees-health
   ask trees [
     if (water <= 0) [
-      set health (health - random 5)
+      set health (health - 10 - random 5)
     ]
     if (water >= 50) [
       set health min list max-health (health + (10 + random 5))
@@ -369,8 +380,8 @@ GRAPHICS-WINDOW
 1
 1
 0
-1
-1
+0
+0
 1
 -14
 14
@@ -677,7 +688,7 @@ global-temperature
 global-temperature
 0
 20
-6.2
+11.0
 0.1
 1
 NIL
@@ -722,7 +733,7 @@ mean-time-between-rain
 mean-time-between-rain
 0
 200
-108.0
+60.0
 1
 1
 NIL
@@ -751,8 +762,8 @@ SLIDER
 rain-intensity
 rain-intensity
 0
-100
-10.0
+20
+20.0
 1
 1
 NIL
@@ -767,7 +778,7 @@ start-tree-count
 start-tree-count
 0
 500
-100.0
+200.0
 1
 1
 NIL
@@ -800,6 +811,51 @@ rain-type
 rain-type
 "deterministic" "stochastic"
 0
+
+SWITCH
+422
+572
+572
+605
+do-evap-pos-mul
+do-evap-pos-mul
+0
+1
+-1000
+
+BUTTON
+924
+28
+1009
+61
+Config 1
+set start-tree-count 200\nset global-temperature 11\nset forest-evap-mul 0.5\nset forest-capacity-mul 2\n\nset mean-time-between-rain 60\nset mean-rain-duration 20\nset rain-intensity 20\n
+NIL
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+1
+
+BUTTON
+926
+72
+1011
+105
+Config 2
+set start-tree-count 99\nset global-temperature 8\nset forest-evap-mul 1\nset forest-capacity-mul 2\n\nset mean-time-between-rain 50\nset mean-rain-duration 20\nset rain-intensity 20\n
+NIL
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+1
 
 @#$#@#$#@
 ## WHAT IS IT?
