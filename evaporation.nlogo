@@ -17,8 +17,6 @@ globals [
   current-rain-intensity
   mean-evaporation      ;;
   num-trees             ;;
-
-
 ]
 
 breed [trees tree]
@@ -35,6 +33,10 @@ trees-own [
   age
   health
 ]
+
+to update-rain-intensity
+  set rain-intensity 8 * mean-time-between-rain / mean-rain-duration
+end
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -72,6 +74,8 @@ to setup
   ]
   [ask patches [ set evap-pos-mul 1 ]]
 
+  if normalize-rain [update-rain-intensity]
+
   calculate-patch-values
 
   update-display
@@ -101,7 +105,8 @@ to update-display
 end
 
 to seed-trees
-  ask n-of start-tree-count patches with [not any? trees-here and distancexy 0 0 <= 10]
+  let radius ceiling ( sqrt ( start-tree-count / 3.14 ) )
+  ask n-of start-tree-count patches with [not any? trees-here and distancexy 0 0 <= radius]
       [ sprout-trees 1 ]
 end
 
@@ -688,7 +693,7 @@ global-temperature
 global-temperature
 0
 20
-11.0
+13.0
 0.1
 1
 NIL
@@ -733,7 +738,7 @@ mean-time-between-rain
 mean-time-between-rain
 0
 200
-60.0
+50.0
 1
 1
 NIL
@@ -778,7 +783,7 @@ start-tree-count
 start-tree-count
 0
 500
-200.0
+100.0
 1
 1
 NIL
@@ -856,6 +861,17 @@ NIL
 NIL
 NIL
 1
+
+SWITCH
+423
+609
+587
+642
+normalize-rain
+normalize-rain
+0
+1
+-1000
 
 @#$#@#$#@
 ## WHAT IS IT?
@@ -1246,6 +1262,217 @@ NetLogo 6.2.0
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
+<experiments>
+  <experiment name="temp/intensity matrix" repetitions="1" runMetricsEveryStep="true">
+    <setup>update-rain-intensity
+setup</setup>
+    <go>go</go>
+    <timeLimit steps="1000"/>
+    <metric>count trees</metric>
+    <enumeratedValueSet variable="global-temperature">
+      <value value="4"/>
+      <value value="5"/>
+      <value value="6"/>
+      <value value="7"/>
+      <value value="8"/>
+      <value value="9"/>
+      <value value="10"/>
+      <value value="11"/>
+      <value value="12"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="mean-rain-duration">
+      <value value="1"/>
+      <value value="2"/>
+      <value value="3"/>
+      <value value="4"/>
+      <value value="5"/>
+      <value value="6"/>
+      <value value="7"/>
+      <value value="8"/>
+      <value value="9"/>
+      <value value="10"/>
+      <value value="11"/>
+      <value value="12"/>
+      <value value="13"/>
+      <value value="14"/>
+      <value value="15"/>
+      <value value="16"/>
+      <value value="17"/>
+      <value value="18"/>
+      <value value="19"/>
+      <value value="20"/>
+      <value value="21"/>
+      <value value="22"/>
+      <value value="23"/>
+      <value value="24"/>
+      <value value="25"/>
+      <value value="26"/>
+      <value value="27"/>
+      <value value="28"/>
+      <value value="29"/>
+      <value value="30"/>
+      <value value="31"/>
+      <value value="32"/>
+      <value value="33"/>
+      <value value="34"/>
+      <value value="35"/>
+      <value value="36"/>
+      <value value="37"/>
+      <value value="38"/>
+      <value value="39"/>
+      <value value="40"/>
+      <value value="41"/>
+      <value value="42"/>
+      <value value="43"/>
+      <value value="44"/>
+      <value value="45"/>
+      <value value="46"/>
+      <value value="47"/>
+      <value value="48"/>
+      <value value="49"/>
+      <value value="50"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="albedo-of-whites">
+      <value value="0.75"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="rain-scenario">
+      <value value="&quot;maintain&quot;"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="paint-daisies-as">
+      <value value="&quot;remove&quot;"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="start-%-blacks">
+      <value value="20"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="show-trees?">
+      <value value="true"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="show-what">
+      <value value="&quot;water amount&quot;"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="rain-intensity">
+      <value value="20"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="do-evap-pos-mul">
+      <value value="true"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="start-%-whites">
+      <value value="20"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="temp-scenario">
+      <value value="&quot;maintain&quot;"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="mean-time-between-rain">
+      <value value="50"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="forest-evap-mul">
+      <value value="1"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="show-temp-map?">
+      <value value="true"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="start-tree-count">
+      <value value="99"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="albedo-of-blacks">
+      <value value="0.25"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="forest-capacity-mul">
+      <value value="2"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="solar-luminosity">
+      <value value="0.8"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="albedo-of-surface">
+      <value value="0.4"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="scenario">
+      <value value="&quot;maintain current luminosity&quot;"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="rain-type">
+      <value value="&quot;deterministic&quot;"/>
+    </enumeratedValueSet>
+  </experiment>
+  <experiment name="temp-intensity" repetitions="1" runMetricsEveryStep="true">
+    <setup>setup</setup>
+    <go>go</go>
+    <timeLimit steps="1000"/>
+    <metric>count trees</metric>
+    <enumeratedValueSet variable="global-temperature">
+      <value value="4"/>
+      <value value="5"/>
+      <value value="6"/>
+      <value value="7"/>
+      <value value="8"/>
+      <value value="9"/>
+      <value value="10"/>
+      <value value="11"/>
+      <value value="12"/>
+      <value value="13"/>
+      <value value="14"/>
+      <value value="15"/>
+      <value value="16"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="mean-rain-duration">
+      <value value="1"/>
+      <value value="2"/>
+      <value value="3"/>
+      <value value="4"/>
+      <value value="5"/>
+      <value value="6"/>
+      <value value="7"/>
+      <value value="8"/>
+      <value value="9"/>
+      <value value="10"/>
+      <value value="11"/>
+      <value value="12"/>
+      <value value="13"/>
+      <value value="14"/>
+      <value value="15"/>
+      <value value="16"/>
+      <value value="17"/>
+      <value value="18"/>
+      <value value="19"/>
+      <value value="20"/>
+      <value value="21"/>
+      <value value="22"/>
+      <value value="23"/>
+      <value value="24"/>
+      <value value="25"/>
+      <value value="26"/>
+      <value value="27"/>
+      <value value="28"/>
+      <value value="29"/>
+      <value value="30"/>
+      <value value="31"/>
+      <value value="32"/>
+      <value value="33"/>
+      <value value="34"/>
+      <value value="35"/>
+      <value value="36"/>
+      <value value="37"/>
+      <value value="38"/>
+      <value value="39"/>
+      <value value="40"/>
+      <value value="41"/>
+      <value value="42"/>
+      <value value="43"/>
+      <value value="44"/>
+      <value value="45"/>
+      <value value="46"/>
+      <value value="47"/>
+      <value value="48"/>
+      <value value="49"/>
+      <value value="50"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="forest-evap-mul">
+      <value value="0.5"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="forest-capacity-mul">
+      <value value="2"/>
+    </enumeratedValueSet>
+  </experiment>
+</experiments>
 @#$#@#$#@
 @#$#@#$#@
 default
