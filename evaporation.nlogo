@@ -2,7 +2,7 @@ globals [
   max-age               ;; maximum age that all trees live to
   base-capacity         ;; base capacity of patches
 
-  max-seed-chance       ;; probability of seeding a new tree
+  ;max-seed-chance       ;; probability of seeding a new tree
   max-health            ;; max healthpoints tree can have
 
   ;global-temperature   ;; ui determines base evaporation rate
@@ -51,7 +51,7 @@ to setup
   set base-capacity 100
 
   set max-health 100
-  set max-seed-chance 0.05
+;  set max-seed-chance 0.05
 ;  set global-temperature 10
 ;  set forest-evap-mul 0.5
 ;  set forest-capacity-mul 2
@@ -100,6 +100,12 @@ to update-display
       ]
     ]
   )
+
+  ask trees [
+    ifelse (health < 50)
+      [set color scale-color 33 health -50 100]
+      [set color scale-color (green) health 150 0]
+  ]
 
 
 end
@@ -186,7 +192,7 @@ to breed-trees
   ask trees [
     let prob 0
     let seeding-places nobody
-    if age >= 3 [
+    if age >= 10 [
       set prob (health / max-health)
       set prob (prob * prob * prob)
       set prob (prob * max-seed-chance)
@@ -399,10 +405,10 @@ ticks
 30.0
 
 SLIDER
-1479
-530
-1674
-563
+1691
+504
+1886
+537
 albedo-of-surface
 albedo-of-surface
 0
@@ -414,20 +420,20 @@ NIL
 HORIZONTAL
 
 CHOOSER
-1479
-440
-1674
-485
+1691
+414
+1886
+459
 scenario
 scenario
 "ramp-up-ramp-down" "maintain current luminosity" "low solar luminosity" "our solar luminosity" "high solar luminosity"
 1
 
 SLIDER
-1479
-490
-1674
-523
+1691
+464
+1886
+497
 solar-luminosity
 solar-luminosity
 0.0010
@@ -439,10 +445,10 @@ NIL
 HORIZONTAL
 
 SLIDER
-1504
-215
-1674
-248
+1716
+189
+1886
+222
 start-%-blacks
 start-%-blacks
 0
@@ -454,10 +460,10 @@ NIL
 HORIZONTAL
 
 SLIDER
-1334
-215
-1499
-248
+1546
+189
+1711
+222
 start-%-whites
 start-%-whites
 0
@@ -469,10 +475,10 @@ NIL
 HORIZONTAL
 
 SWITCH
-1317
-526
-1467
-559
+1529
+500
+1679
+533
 show-temp-map?
 show-temp-map?
 0
@@ -514,10 +520,10 @@ NIL
 1
 
 SWITCH
-422
-535
-572
-568
+424
+508
+574
+541
 show-trees?
 show-trees?
 0
@@ -545,24 +551,6 @@ PENS
 "evaporation" 1.0 0 -2674135 true "" "plot mean-evaporation"
 
 PLOT
-1327
-40
-1527
-190
-Mean Evaporation rate
-NIL
-NIL
-0.0
-100.0
--20.0
-50.0
-true
-false
-"" ""
-PENS
-"default" 1.0 0 -16777216 true "" "plot mean-evaporation"
-
-PLOT
 18
 643
 264
@@ -581,10 +569,10 @@ PENS
 "black" 1.0 0 -16777216 true "" "plot num-trees"
 
 SLIDER
-1334
-250
-1499
-283
+1546
+224
+1711
+257
 albedo-of-whites
 albedo-of-whites
 0
@@ -596,10 +584,10 @@ NIL
 HORIZONTAL
 
 SLIDER
-1504
-250
-1674
-283
+1716
+224
+1886
+257
 albedo-of-blacks
 albedo-of-blacks
 0
@@ -611,10 +599,10 @@ NIL
 HORIZONTAL
 
 BUTTON
-1472
-310
-1607
-355
+1684
+284
+1819
+329
 remove all daisies
 ask daisies [die]\ndisplay
 NIL
@@ -628,10 +616,10 @@ NIL
 1
 
 BUTTON
-1332
-360
-1467
-403
+1544
+334
+1679
+377
 paint daisies
 paint-daisies
 T
@@ -645,30 +633,30 @@ NIL
 1
 
 CHOOSER
-1332
-310
-1468
-355
+1544
+284
+1680
+329
 paint-daisies-as
 paint-daisies-as
 "add black" "add white" "remove"
 2
 
 CHOOSER
-421
-481
-591
-526
+422
+458
+592
+503
 show-what
 show-what
 "water amount" "evaporation rate"
 0
 
 CHOOSER
-6
-115
-144
-160
+7
+138
+145
+183
 temp-scenario
 temp-scenario
 "maintain"
@@ -676,24 +664,24 @@ temp-scenario
 
 CHOOSER
 5
-186
+197
 143
-231
+242
 rain-scenario
 rain-scenario
 "maintain"
 0
 
 SLIDER
-158
-115
-359
-148
+159
+138
+360
+171
 global-temperature
 global-temperature
 0
 20
-13.0
+11.0
 0.1
 1
 NIL
@@ -731,14 +719,14 @@ HORIZONTAL
 
 SLIDER
 155
-189
+197
 377
-222
+230
 mean-time-between-rain
 mean-time-between-rain
 0
 200
-50.0
+60.0
 1
 1
 NIL
@@ -746,9 +734,9 @@ HORIZONTAL
 
 SLIDER
 155
-233
+234
 377
-266
+267
 mean-rain-duration
 mean-rain-duration
 0
@@ -760,10 +748,10 @@ NIL
 HORIZONTAL
 
 SLIDER
-156
-274
-351
-307
+155
+271
+350
+304
 rain-intensity
 rain-intensity
 0
@@ -792,7 +780,7 @@ HORIZONTAL
 PLOT
 16
 476
-264
+328
 626
 Ground Water
 NIL
@@ -802,26 +790,27 @@ NIL
 0.0
 100.0
 true
-false
+true
 "" ""
 PENS
-"default" 1.0 0 -13791810 true "" "plot (mean [water] of patches)"
+"water" 1.0 0 -13791810 true "" "plot (mean [water] of patches)"
+"health" 1.0 0 -5298144 true "" "plot (mean [health] of trees)"
 
 CHOOSER
 6
-232
+243
 141
-277
+288
 rain-type
 rain-type
 "deterministic" "stochastic"
 0
 
 SWITCH
-422
-572
-572
-605
+693
+469
+843
+502
 do-evap-pos-mul
 do-evap-pos-mul
 0
@@ -829,12 +818,12 @@ do-evap-pos-mul
 -1000
 
 BUTTON
-924
-28
-1009
-61
+868
+29
+953
+62
 Config 1
-set start-tree-count 200\nset global-temperature 11\nset forest-evap-mul 0.5\nset forest-capacity-mul 2\n\nset mean-time-between-rain 60\nset mean-rain-duration 20\nset rain-intensity 20\n
+set start-tree-count 100\nset global-temperature 11\nset forest-evap-mul 0.5\nset forest-capacity-mul 2\n\nset mean-time-between-rain 60\nset mean-rain-duration 20\nset rain-intensity 20\n
 NIL
 1
 T
@@ -846,12 +835,12 @@ NIL
 1
 
 BUTTON
-926
-72
-1011
-105
+870
+73
+955
+106
 Config 2
-set start-tree-count 99\nset global-temperature 8\nset forest-evap-mul 1\nset forest-capacity-mul 2\n\nset mean-time-between-rain 50\nset mean-rain-duration 20\nset rain-intensity 20\n
+set start-tree-count 100\nset global-temperature 8\nset forest-evap-mul 1\nset forest-capacity-mul 2\n\nset mean-time-between-rain 50\nset mean-rain-duration 20\nset rain-intensity 20\n
 NIL
 1
 T
@@ -863,15 +852,30 @@ NIL
 1
 
 SWITCH
-423
-609
-587
-642
+694
+506
+858
+539
 normalize-rain
 normalize-rain
 0
 1
 -1000
+
+SLIDER
+421
+568
+860
+601
+max-seed-chance
+max-seed-chance
+0
+0.05
+0.04
+0.001
+1
+NIL
+HORIZONTAL
 
 @#$#@#$#@
 ## WHAT IS IT?
@@ -1412,6 +1416,8 @@ setup</setup>
       <value value="14"/>
       <value value="15"/>
       <value value="16"/>
+      <value value="17"/>
+      <value value="18"/>
     </enumeratedValueSet>
     <enumeratedValueSet variable="mean-rain-duration">
       <value value="1"/>
@@ -1467,6 +1473,7 @@ setup</setup>
     </enumeratedValueSet>
     <enumeratedValueSet variable="forest-evap-mul">
       <value value="0.5"/>
+      <value value="1"/>
     </enumeratedValueSet>
     <enumeratedValueSet variable="forest-capacity-mul">
       <value value="2"/>
