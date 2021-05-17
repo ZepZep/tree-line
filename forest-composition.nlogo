@@ -67,11 +67,15 @@ end
 to live
   ask turtles [
     set age age + 1
+    if (is-pine? self) [
+      let oak-neighbours-frac (sum [count oaks-here] of neighbors / 9)
+      let tolerance-diff oak-tolerance - pine-tolerance
+      set tolerance pine-tolerance + ((tolerance-diff * (oak-tolerance-share / 10)) * oak-neighbours-frac)
+    ]
     if (cur-rain > tolerance) [
       if (random 100 <= 50) [
         set health health - 1
       ]
-
     ]
   ]
 end
@@ -380,13 +384,13 @@ NIL
 HORIZONTAL
 
 SLIDER
-1011
-347
-1183
-380
+1015
+349
+1187
+382
 oak-tolerance
 oak-tolerance
-0
+pine-tolerance
 5
 2.5
 0.1
@@ -456,6 +460,21 @@ false
 PENS
 "default" 1.0 0 -12087248 true "" "plot pine-age-total / pine-cuts"
 "pen-1" 1.0 0 -14454117 true "" "plot oak-age-total / oak-cuts"
+
+SLIDER
+1011
+731
+1207
+764
+oak-tolerance-share
+oak-tolerance-share
+0
+100
+50.0
+1
+1
+%
+HORIZONTAL
 
 @#$#@#$#@
 ## WHAT IS IT?
