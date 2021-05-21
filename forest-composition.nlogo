@@ -362,7 +362,7 @@ oak-percentage
 oak-percentage
 0
 100
-30.0
+25.0
 1
 1
 NIL
@@ -1076,6 +1076,51 @@ setup</setup>
     </enumeratedValueSet>
     <enumeratedValueSet variable="forest-capacity-mul">
       <value value="2"/>
+    </enumeratedValueSet>
+  </experiment>
+  <experiment name="percent-dev" repetitions="1" runMetricsEveryStep="false">
+    <setup>setup</setup>
+    <go>go</go>
+    <timeLimit steps="2000"/>
+    <metric>total-profit / ticks</metric>
+    <enumeratedValueSet variable="oak-percentage">
+      <value value="0"/>
+      <value value="5"/>
+      <value value="10"/>
+      <value value="15"/>
+      <value value="20"/>
+      <value value="25"/>
+      <value value="30"/>
+      <value value="35"/>
+      <value value="40"/>
+      <value value="45"/>
+      <value value="50"/>
+      <value value="55"/>
+      <value value="60"/>
+      <value value="65"/>
+      <value value="60"/>
+      <value value="75"/>
+      <value value="70"/>
+      <value value="85"/>
+      <value value="80"/>
+      <value value="85"/>
+      <value value="90"/>
+      <value value="95"/>
+      <value value="100"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="rain-deviation">
+      <value value="0.5"/>
+      <value value="0.75"/>
+      <value value="1"/>
+      <value value="1.25"/>
+      <value value="1.5"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="oak-tolerance-share">
+      <value value="0"/>
+      <value value="25"/>
+      <value value="50"/>
+      <value value="75"/>
+      <value value="100"/>
     </enumeratedValueSet>
   </experiment>
 </experiments>
