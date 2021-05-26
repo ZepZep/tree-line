@@ -146,13 +146,13 @@ to seed-tree
 end
 @#$#@#$#@
 GRAPHICS-WINDOW
-270
-85
-713
-529
+398
+10
+1131
+744
 -1
 -1
-15.0
+25.0
 1
 10
 1
@@ -173,10 +173,10 @@ ticks
 30.0
 
 BUTTON
-6
-45
-71
-78
+81
+10
+146
+43
 NIL
 go
 T
@@ -190,10 +190,10 @@ NIL
 0
 
 BUTTON
-6
-8
-71
-41
+10
+10
+75
+43
 NIL
 setup
 NIL
@@ -207,10 +207,10 @@ NIL
 1
 
 SLIDER
-1018
-125
-1190
-158
+9
+162
+181
+195
 pine-cut-age-max
 pine-cut-age-max
 0
@@ -222,10 +222,10 @@ NIL
 HORIZONTAL
 
 SLIDER
-1018
-161
-1190
-194
+9
+198
+181
+231
 pine-max-profit
 pine-max-profit
 0
@@ -237,10 +237,10 @@ NIL
 HORIZONTAL
 
 SLIDER
-1015
-270
-1187
-303
+10
+302
+182
+335
 oak-cut-age-max
 oak-cut-age-max
 0
@@ -252,10 +252,10 @@ NIL
 HORIZONTAL
 
 SLIDER
-1014
-307
-1186
-340
+9
+341
+181
+374
 oak-max-profit
 oak-max-profit
 0
@@ -267,10 +267,10 @@ NIL
 HORIZONTAL
 
 MONITOR
-1208
-172
-1350
-217
+190
+205
+379
+250
 Pine base profitability
 pine-max-profit / pine-cut-age * (count patches)
 3
@@ -278,10 +278,10 @@ pine-max-profit / pine-cut-age * (count patches)
 11
 
 MONITOR
-1204
-319
-1346
-364
+189
+382
+379
+427
 Oak base profitability
 oak-max-profit / oak-cut-age * (count patches)
 3
@@ -289,25 +289,25 @@ oak-max-profit / oak-cut-age * (count patches)
 11
 
 SLIDER
-1014
-13
-1204
-46
+9
+60
+182
+93
 weather-deviation
 weather-deviation
 0
 10
-0.5
+1.0
 0.1
 1
 NIL
 HORIZONTAL
 
 SLIDER
-1196
-14
-1368
-47
+187
+60
+380
+93
 dry-cost-mul
 dry-cost-mul
 0
@@ -319,10 +319,10 @@ NIL
 HORIZONTAL
 
 PLOT
-1011
-559
-1317
-709
+1146
+295
+1556
+527
 Weather histogram
 NIL
 NIL
@@ -332,15 +332,15 @@ NIL
 10.0
 true
 false
-"set-plot-x-range 0 (4 * rain-deviation)\nset-histogram-num-bars 8" ""
+"set-plot-x-range 0 (4 * weather-deviation)\nset-histogram-num-bars 8" ""
 PENS
-"default" 1.0 1 -16777216 true "" "histogram rain-hist"
+"default" 1.0 1 -16777216 true "" "histogram weather-hist"
 
 PLOT
-1011
-398
-1315
-548
+1147
+10
+1557
+235
 Weather
 NIL
 NIL
@@ -350,17 +350,17 @@ NIL
 10.0
 true
 false
-"set-plot-y-range 0 (4 * rain-deviation)" ""
+"set-plot-y-range 0 (4 * weather-deviation)" ""
 PENS
-"weather" 1.0 2 -16777216 true "" "plot cur-rain"
+"weather" 1.0 2 -16777216 true "" "plot cur-weather"
 "pine tolerance" 1.0 0 -13210332 true "" "plot pine-tolerance"
 "oak tolerance" 1.0 0 -14454117 true "" "plot oak-tolerance"
 
 SLIDER
-1014
-51
-1186
-84
+9
+98
+181
+131
 oak-percentage
 oak-percentage
 0
@@ -372,10 +372,10 @@ NIL
 HORIZONTAL
 
 SLIDER
-1018
-200
-1190
-233
+9
+237
+181
+270
 pine-tolerance
 pine-tolerance
 0
@@ -387,10 +387,10 @@ NIL
 HORIZONTAL
 
 SLIDER
-1015
-349
-1187
-382
+10
+381
+182
+414
 oak-tolerance
 oak-tolerance
 pine-tolerance
@@ -402,10 +402,10 @@ NIL
 HORIZONTAL
 
 SLIDER
-1197
-51
-1369
-84
+188
+97
+379
+130
 tree-max-health
 tree-max-health
 1
@@ -417,10 +417,10 @@ NIL
 HORIZONTAL
 
 PLOT
-1339
-558
-1539
-708
+1561
+295
+1828
+527
 Profitability
 NIL
 NIL
@@ -435,10 +435,10 @@ PENS
 "default" 1.0 0 -16777216 true "" "plot total-profit / ticks"
 
 MONITOR
-1565
-625
-1651
-670
+1562
+536
+1827
+581
 Profitability
 total-profit / ticks
 0
@@ -446,10 +446,10 @@ total-profit / ticks
 11
 
 PLOT
-1338
-384
-1538
-534
+1561
+10
+1828
+235
 Cut age
 NIL
 NIL
@@ -465,10 +465,10 @@ PENS
 "pen-1" 1.0 0 -14454117 true "" "plot oak-age-total / oak-cuts"
 
 SLIDER
-1011
-731
-1207
-764
+189
+342
+379
+375
 oak-tolerance-share
 oak-tolerance-share
 0
@@ -480,34 +480,56 @@ oak-tolerance-share
 HORIZONTAL
 
 SLIDER
-1200
-271
-1372
-304
+189
+302
+379
+335
 oak-cut-age
 oak-cut-age
 0
 oak-cut-age-max
-35.0
+100.0
 1
 1
 NIL
 HORIZONTAL
 
 SLIDER
-1203
-125
-1375
-158
+190
+162
+378
+195
 pine-cut-age
 pine-cut-age
 0
 pine-cut-age-max
-45.0
+50.0
 1
 1
 NIL
 HORIZONTAL
+
+MONITOR
+1697
+241
+1827
+286
+Oak cut age
+oak-age-total / oak-cuts
+2
+1
+11
+
+MONITOR
+1563
+241
+1692
+286
+Pine cut age
+pine-age-total / pine-cuts
+2
+1
+11
 
 @#$#@#$#@
 ## WHAT IS IT?
