@@ -20,6 +20,7 @@ breed [oaks oak]
 turtles-own [
   age
   cut-age
+  cut-age-max
   max-profit
   tolerance
   health
@@ -97,7 +98,7 @@ to cut
 end
 
 to add-profit
-  let power (3 / 4 * cut-age - age) / (age / 10)
+  let power (3 / 4 * cut-age-max - age) / (age / 10)
   let profit max-profit / ( 1 + exp power )
 ;  show list age profit
   set total-profit total-profit + profit
@@ -126,12 +127,14 @@ to seed-tree
   [sprout-oaks 1  [
     set color blue
     set cut-age oak-cut-age
+    set cut-age-max oak-cut-age-max
     set tolerance oak-tolerance
     set max-profit oak-max-profit
   ]]
   [sprout-pines 1 [
     set color green
     set cut-age pine-cut-age
+    set cut-age-max pine-cut-age-max
     set tolerance pine-tolerance
     set max-profit pine-max-profit
   ] ]
@@ -208,8 +211,8 @@ SLIDER
 125
 1190
 158
-pine-cut-age
-pine-cut-age
+pine-cut-age-max
+pine-cut-age-max
 0
 200
 50.0
@@ -238,8 +241,8 @@ SLIDER
 270
 1187
 303
-oak-cut-age
-oak-cut-age
+oak-cut-age-max
+oak-cut-age-max
 0
 200
 100.0
@@ -264,10 +267,10 @@ NIL
 HORIZONTAL
 
 MONITOR
-1206
-127
-1348
+1208
 172
+1350
+217
 Pine base profitability
 pine-max-profit / pine-cut-age * (count patches)
 3
@@ -275,10 +278,10 @@ pine-max-profit / pine-cut-age * (count patches)
 11
 
 MONITOR
-1205
-277
-1347
-322
+1204
+319
+1346
+364
 Oak base profitability
 oak-max-profit / oak-cut-age * (count patches)
 3
@@ -294,7 +297,7 @@ rain-deviation
 rain-deviation
 0
 10
-1.0
+0.5
 0.1
 1
 NIL
@@ -362,7 +365,7 @@ oak-percentage
 oak-percentage
 0
 100
-25.0
+5.0
 1
 1
 NIL
@@ -474,6 +477,36 @@ oak-tolerance-share
 1
 1
 %
+HORIZONTAL
+
+SLIDER
+1200
+271
+1372
+304
+oak-cut-age
+oak-cut-age
+0
+oak-cut-age-max
+35.0
+1
+1
+NIL
+HORIZONTAL
+
+SLIDER
+1203
+125
+1375
+158
+pine-cut-age
+pine-cut-age
+0
+pine-cut-age-max
+45.0
+1
+1
+NIL
 HORIZONTAL
 
 @#$#@#$#@
@@ -1122,6 +1155,28 @@ setup</setup>
       <value value="75"/>
       <value value="100"/>
     </enumeratedValueSet>
+  </experiment>
+  <experiment name="cut-age-development" repetitions="1" runMetricsEveryStep="false">
+    <setup>setup</setup>
+    <go>go</go>
+    <timeLimit steps="2000"/>
+    <metric>total-profit / ticks</metric>
+    <steppedValueSet variable="pine-cut-age" first="10" step="1" last="50"/>
+    <steppedValueSet variable="oak-cut-age" first="10" step="1" last="100"/>
+  </experiment>
+  <experiment name="cut-age-development-oak" repetitions="1" runMetricsEveryStep="false">
+    <setup>setup</setup>
+    <go>go</go>
+    <timeLimit steps="2000"/>
+    <metric>total-profit / ticks</metric>
+    <steppedValueSet variable="pine-cut-age" first="10" step="1" last="50"/>
+  </experiment>
+  <experiment name="cut-age-development-pine" repetitions="1" runMetricsEveryStep="false">
+    <setup>setup</setup>
+    <go>go</go>
+    <timeLimit steps="2000"/>
+    <metric>total-profit / ticks</metric>
+    <steppedValueSet variable="oak-cut-age" first="10" step="1" last="50"/>
   </experiment>
 </experiments>
 @#$#@#$#@
