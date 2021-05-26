@@ -1,6 +1,6 @@
 globals [
-  cur-rain
-  rain-hist
+  cur-weather
+  weather-hist
 
   target-oak-percentage
 
@@ -36,7 +36,7 @@ turtles-own [
 to setup
   clear-all
   reset-ticks
-  set rain-hist (list )
+  set weather-hist (list )
 
   set-default-shape pines  "tree pine"
   set-default-shape oaks   "tree"
@@ -54,8 +54,8 @@ end
 
 
 to go
-  set cur-rain abs (random-normal 0 rain-deviation)
-  set rain-hist lput cur-rain rain-hist
+  set cur-weather abs (random-normal 0 weather-deviation)
+  set weather-hist lput cur-weather weather-hist
 
   live
   cut
@@ -73,7 +73,7 @@ to live
       let tolerance-diff oak-tolerance - pine-tolerance
       set tolerance pine-tolerance + ((tolerance-diff * (oak-tolerance-share / 10)) * oak-neighbours-frac)
     ]
-    if (cur-rain > tolerance) [
+    if (cur-weather > tolerance) [
       if (random 100 <= 50) [
         set health health - 1
       ]
@@ -291,10 +291,10 @@ oak-max-profit / oak-cut-age * (count patches)
 SLIDER
 1014
 13
-1186
+1204
 46
-rain-deviation
-rain-deviation
+weather-deviation
+weather-deviation
 0
 10
 0.5
