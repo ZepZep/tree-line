@@ -49,6 +49,7 @@ to setup
 
   ask turtles [
     set age random 5
+    change_size
   ]
 end
 
@@ -68,6 +69,7 @@ end
 to live
   ask turtles [
     set age age + 1
+    change_size
     if (is-pine? self) [
       let oak-neighbours-frac (sum [count oaks-here] of neighbors / 9)
       let tolerance-diff oak-tolerance - pine-tolerance
@@ -76,9 +78,19 @@ to live
     if (cur-weather > tolerance) [
       if (random 100 <= 50) [
         set health health - 1
+        if health = 2 [
+          set color orange
+        ]
+        if health = 1 [
+          set color brown
+        ]
       ]
     ]
   ]
+end
+
+to change_size
+  set size ((age + cut-age-max) / ( 2 * cut-age-max))
 end
 
 to cut
@@ -127,14 +139,14 @@ to seed-tree
   [sprout-oaks 1  [
     set color blue
     set cut-age oak-cut-age
-    set cut-age-max oak-cut-age-max
+    set cut-age-max oak-cut-age-std
     set tolerance oak-tolerance
     set max-profit oak-max-profit
   ]]
   [sprout-pines 1 [
     set color green
     set cut-age pine-cut-age
-    set cut-age-max pine-cut-age-max
+    set cut-age-max pine-cut-age-std
     set tolerance pine-tolerance
     set max-profit pine-max-profit
   ] ]
@@ -142,6 +154,7 @@ to seed-tree
   ask turtles-here [
     set health tree-max-health
     set age 0
+    change_size
   ]
 end
 @#$#@#$#@
@@ -211,8 +224,8 @@ SLIDER
 162
 181
 195
-pine-cut-age-max
-pine-cut-age-max
+pine-cut-age-std
+pine-cut-age-std
 0
 200
 50.0
@@ -241,8 +254,8 @@ SLIDER
 302
 182
 335
-oak-cut-age-max
-oak-cut-age-max
+oak-cut-age-std
+oak-cut-age-std
 0
 200
 100.0
@@ -365,7 +378,7 @@ oak-percentage
 oak-percentage
 0
 100
-5.0
+30.0
 1
 1
 NIL
@@ -473,7 +486,7 @@ oak-tolerance-share
 oak-tolerance-share
 0
 100
-50.0
+75.0
 1
 1
 %
@@ -487,7 +500,7 @@ SLIDER
 oak-cut-age
 oak-cut-age
 0
-oak-cut-age-max
+oak-cut-age-std * 1.5
 100.0
 1
 1
@@ -502,7 +515,7 @@ SLIDER
 pine-cut-age
 pine-cut-age
 0
-pine-cut-age-max
+pine-cut-age-std * 1.5
 50.0
 1
 1
@@ -1183,22 +1196,64 @@ setup</setup>
     <go>go</go>
     <timeLimit steps="2000"/>
     <metric>total-profit / ticks</metric>
-    <steppedValueSet variable="pine-cut-age" first="10" step="1" last="50"/>
-    <steppedValueSet variable="oak-cut-age" first="10" step="1" last="100"/>
-  </experiment>
-  <experiment name="cut-age-development-oak" repetitions="1" runMetricsEveryStep="false">
-    <setup>setup</setup>
-    <go>go</go>
-    <timeLimit steps="2000"/>
-    <metric>total-profit / ticks</metric>
-    <steppedValueSet variable="pine-cut-age" first="10" step="1" last="50"/>
+    <steppedValueSet variable="pine-cut-age" first="10" step="5" last="50"/>
+    <steppedValueSet variable="oak-cut-age" first="10" step="5" last="100"/>
+    <enumeratedValueSet variable="weather-deviation">
+      <value value="0.5"/>
+      <value value="0.75"/>
+      <value value="1"/>
+      <value value="1.25"/>
+      <value value="1.5"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="oak-tolerance-share">
+      <value value="0"/>
+      <value value="25"/>
+      <value value="50"/>
+      <value value="75"/>
+      <value value="100"/>
+    </enumeratedValueSet>
   </experiment>
   <experiment name="cut-age-development-pine" repetitions="1" runMetricsEveryStep="false">
     <setup>setup</setup>
     <go>go</go>
     <timeLimit steps="2000"/>
     <metric>total-profit / ticks</metric>
-    <steppedValueSet variable="oak-cut-age" first="10" step="1" last="50"/>
+    <steppedValueSet variable="pine-cut-age" first="10" step="1" last="75"/>
+    <enumeratedValueSet variable="weather-deviation">
+      <value value="0.5"/>
+      <value value="0.75"/>
+      <value value="1"/>
+      <value value="1.25"/>
+      <value value="1.5"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="oak-tolerance-share">
+      <value value="0"/>
+      <value value="25"/>
+      <value value="50"/>
+      <value value="75"/>
+      <value value="100"/>
+    </enumeratedValueSet>
+  </experiment>
+  <experiment name="cut-age-development-oak" repetitions="1" runMetricsEveryStep="false">
+    <setup>setup</setup>
+    <go>go</go>
+    <timeLimit steps="2000"/>
+    <metric>total-profit / ticks</metric>
+    <steppedValueSet variable="oak-cut-age" first="10" step="1" last="150"/>
+    <enumeratedValueSet variable="weather-deviation">
+      <value value="0.5"/>
+      <value value="0.75"/>
+      <value value="1"/>
+      <value value="1.25"/>
+      <value value="1.5"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="oak-tolerance-share">
+      <value value="0"/>
+      <value value="25"/>
+      <value value="50"/>
+      <value value="75"/>
+      <value value="100"/>
+    </enumeratedValueSet>
   </experiment>
 </experiments>
 @#$#@#$#@
