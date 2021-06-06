@@ -316,21 +316,6 @@ weather-variance
 NIL
 HORIZONTAL
 
-SLIDER
-187
-60
-380
-93
-dry-cost-mul
-dry-cost-mul
-0
-2
-1.0
-0.1
-1
-NIL
-HORIZONTAL
-
 PLOT
 1146
 295
@@ -415,10 +400,10 @@ NIL
 HORIZONTAL
 
 SLIDER
-188
-97
-379
-130
+191
+60
+382
+93
 tree-max-health
 tree-max-health
 1
