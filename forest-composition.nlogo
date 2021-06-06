@@ -20,7 +20,7 @@ breed [oaks oak]
 turtles-own [
   age
   cut-age
-  cut-age-max
+  ripe-age
   max-profit
   tolerance
   health
@@ -55,7 +55,7 @@ end
 
 
 to go
-  set cur-weather abs (random-normal 0 weather-deviation)
+  set cur-weather abs (random-normal 0 weather-variance)
   set weather-hist lput cur-weather weather-hist
 
   live
@@ -90,7 +90,7 @@ to live
 end
 
 to change_size
-  set size ((age + cut-age-max) / ( 2 * cut-age-max))
+  set size ((age + ripe-age) / ( 2 * ripe-age))
 end
 
 to cut
@@ -110,7 +110,7 @@ to cut
 end
 
 to add-profit
-  let power (3 / 4 * cut-age-max - age) / (age / 10)
+  let power (3 / 4 * ripe-age - age) / (age / 10)
   let profit max-profit / ( 1 + exp power )
 ;  show list age profit
   set total-profit total-profit + profit
@@ -137,16 +137,16 @@ to seed-tree
   let r random 100
   ifelse (r < target-oak-percentage)
   [sprout-oaks 1  [
-    set color blue
+    set color green + 1
     set cut-age oak-cut-age
-    set cut-age-max oak-cut-age-std
+    set ripe-age oak-ripe-age
     set tolerance oak-tolerance
     set max-profit oak-max-profit
   ]]
   [sprout-pines 1 [
-    set color green
+    set color green - 2
     set cut-age pine-cut-age
-    set cut-age-max pine-cut-age-std
+    set ripe-age pine-ripe-age
     set tolerance pine-tolerance
     set max-profit pine-max-profit
   ] ]
@@ -224,8 +224,8 @@ SLIDER
 162
 181
 195
-pine-cut-age-std
-pine-cut-age-std
+pine-ripe-age
+pine-ripe-age
 0
 200
 50.0
@@ -254,8 +254,8 @@ SLIDER
 302
 182
 335
-oak-cut-age-std
-oak-cut-age-std
+oak-ripe-age
+oak-ripe-age
 0
 200
 100.0
@@ -306,8 +306,8 @@ SLIDER
 60
 182
 93
-weather-deviation
-weather-deviation
+weather-variance
+weather-variance
 0
 10
 1.0
@@ -345,7 +345,7 @@ NIL
 10.0
 true
 false
-"set-plot-x-range 0 (4 * weather-deviation)\nset-histogram-num-bars 8" ""
+"set-plot-x-range 0 (4 * weather-variance)\nset-histogram-num-bars 8" ""
 PENS
 "default" 1.0 1 -16777216 true "" "histogram weather-hist"
 
@@ -363,7 +363,7 @@ NIL
 10.0
 true
 false
-"set-plot-y-range 0 (4 * weather-deviation)" ""
+"set-plot-y-range 0 (4 * weather-variance)" ""
 PENS
 "weather" 1.0 2 -16777216 true "" "plot cur-weather"
 "pine tolerance" 1.0 0 -13210332 true "" "plot pine-tolerance"
@@ -500,7 +500,7 @@ SLIDER
 oak-cut-age
 oak-cut-age
 0
-oak-cut-age-std * 1.5
+oak-ripe-age * 1.5
 100.0
 1
 1
@@ -515,7 +515,7 @@ SLIDER
 pine-cut-age
 pine-cut-age
 0
-pine-cut-age-std * 1.5
+pine-ripe-age * 1.5
 50.0
 1
 1
